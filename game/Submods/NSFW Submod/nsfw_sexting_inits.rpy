@@ -102,6 +102,7 @@ init 5 python:
 
 label nsfw_monika_sextingsession:
     $ success = False # True if sexting session was successfully finished
+    $ session_started = False # True if player said yes
 
     # Count this attempt
     if persistent._nsfw_sexting_attempts == 0: # necessary if the teaser was skipped due to the lowest cooldown setting or interrupted sexting session
@@ -147,6 +148,7 @@ label nsfw_monika_sextingsession:
                 if not persistent._nsfw_sexting_interrupted: # prevents exploitation of the reduced cooldown after interruption, also makes sure the player cannot interrupt sexting too often
                     $ mas_gainAffection(modifier=1.5, bypass=True)
                     $ persistent._nsfw_sexting_attempts = 1 # has to be set to 1 due to the teaser modifications
+                $ session_started = True
                 m 1hub "Yay~"
                 call nsfw_sexting_init
 
@@ -196,6 +198,7 @@ label nsfw_monika_sextingsession:
                     if not persistent._nsfw_sexting_interrupted:
                         $ mas_gainAffection(modifier=1.5, bypass=True)
                         $ persistent._nsfw_sexting_attempts = 1
+                    $ session_started = True
                     m 1hub "Yay~"
                     call nsfw_sexting_init
 
@@ -249,6 +252,7 @@ label nsfw_monika_sextingsession:
                     if not persistent._nsfw_sexting_interrupted:
                         $ mas_gainAffection(modifier=1.5, bypass=True)
                         $ persistent._nsfw_sexting_attempts = 1
+                    $ session_started = True
                     m 1hub "Yay~"
                     call nsfw_sexting_init
 
@@ -323,6 +327,7 @@ label nsfw_monika_sextingsession:
                     if not persistent._nsfw_sexting_interrupted:
                         $ mas_gainAffection(modifier=1.5, bypass=True)
                         $ persistent._nsfw_sexting_attempts = 1
+                    $ session_started = True
                     m 1hub "Yay~"
                     call nsfw_sexting_init
 
@@ -339,7 +344,7 @@ label nsfw_monika_sextingsession:
                         m 1eka "Okay, [player]."
 
         # Rejected 5+ times in a row
-        if too_many_attempts:
+        if too_many_attempts and session_started == False: # session_started prevents this block from triggering after saying yes
             # We're not punishing the player for this, but we also need to portray Monika's feelings somewhat accurately
             m 2dkd "*sign*"
             m 2ekc "[player], I give up."
